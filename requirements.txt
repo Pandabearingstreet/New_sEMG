@@ -1,0 +1,14 @@
+h5py
+joblib
+Keras
+matplotlib
+myo-python
+numpy
+pandas
+scikit-learn
+scipy
+seaborn
+scikit-learn
+tensorflow
+mindrove
+pylsl
