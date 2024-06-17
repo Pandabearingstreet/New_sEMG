@@ -26,6 +26,8 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 import numpy as np
 from collections import deque
+import xmltodict
+import pandas as pd
 
 def main():
     # Informative message to indicate the commencement of the process of locating an EMG stream.
@@ -37,10 +39,22 @@ def main():
     
     # Establish connection with the EMG stream
     inlet = StreamInlet(available_streams[0])
-
+    info_dict = xmltodict.parse(inlet.info().as_xml())
+ 
     # get the number of channels in the stream
     n_channels = inlet.info().channel_count()
-
+    # Get channel information
+    channels = []
+    if 'desc' in info_dict['info']:
+        if info_dict['info']['desc'] is not None:
+            if 'channels' in info_dict['info']['desc']:
+                ch = info_dict['info']['desc']['channels']['channel']
+                if type(ch) is list:
+                    channels.append([c['label'] for c in ch])
+                else:
+                    channels.append([ch['label']])
+                channel_DF = pd.DataFrame(ch)
+    print(channel_DF.drop(['label', 'type', 'hardware', 'filtering'],axis=1, inplace=True))
     # Initialize the plot figure and its axes
     fig, axes = plt.subplots(n_channels, ncols=1)
 
